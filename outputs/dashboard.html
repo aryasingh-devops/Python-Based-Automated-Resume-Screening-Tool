@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Automated Resume Screening Tool | Live ATS Dashboard</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    .badge-shortlisted { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
+    .badge-review { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+    .badge-rejected { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .tag-match { background-color: #e0e7ff; color: #3730a3; }
+    .tag-miss { background-color: #fee2e2; color: #991b1b; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 antialiased p-4 md:p-6 min-h-screen">
+  <div class="max-w-6xl mx-auto space-y-6">
+
+    <!-- Header -->
+    <header class="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">📄</span>
+          <div>
+            <h1 class="text-xl md:text-2xl font-bold tracking-tight text-slate-900">Automated Resume Screening Tool</h1>
+            <p class="text-xs md:text-sm text-slate-500">Enterprise Applicant Tracking System (ATS) • Hybrid NLP Vector Scoring</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-300">
+          ● Streamlit Server Active (Port 8501)
+        </span>
+      </div>
+    </header>
+
+    <!-- Role Selector & Thresholds -->
+    <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+        <div>
+          <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Select Target Role</label>
+          <div class="flex flex-wrap gap-2 mt-2" id="role-buttons">
+            <button onclick="switchRole('python_backend')" id="btn-python" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition bg-blue-600 text-white border-blue-600 shadow-sm">
+              🐍 Python Backend Dev
+            </button>
+            <button onclick="switchRole('data_scientist')" id="btn-ds" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 text-slate-700 hover:bg-slate-100 transition">
+              🔬 Data Scientist
+            </button>
+            <button onclick="switchRole('data_analyst')" id="btn-da" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 text-slate-700 hover:bg-slate-100 transition">
+              📊 Data Analyst
+            </button>
+          </div>
+        </div>
+        <div class="text-xs text-slate-600 bg-slate-100 px-3 py-2 rounded-lg border border-slate-200">
+          Thresholds: <span class="text-emerald-600 font-bold">Shortlist ≥ 70%</span> | <span class="text-amber-600 font-bold">Review 50-69%</span> | <span class="text-rose-600 font-bold">Reject &lt; 50%</span>
+        </div>
+      </div>
+
+      <div class="p-3 bg-slate-100 rounded-xl border border-slate-200 text-xs flex flex-wrap gap-2 items-center" id="role-skills-banner">
+        <span class="font-bold text-slate-800">Mandatory Skills:</span>
+        <span id="mandatory-skills-list" class="text-slate-600">Python, Django, FastAPI, PostgreSQL, Docker, RESTful APIs, Git, Redis, Linux, CI/CD</span>
+      </div>
+    </div>
+
+    <!-- KPI Metric Cards -->
+    <div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5">
+      <div class="bg-white border border-slate-200 p-4 rounded-xl shadow-sm text-center">
+        <div class="text-xs text-slate-500 font-medium">Total Applicants</div>
+        <div class="text-2xl font-bold mt-1 text-slate-800" id="metric-total">8</div>
+      </div>
+      <div class="bg-white border border-emerald-200 p-4 rounded-xl shadow-sm text-center">
+        <div class="text-xs text-emerald-700 font-medium">✅ Shortlisted</div>
+        <div class="text-2xl font-bold mt-1 text-emerald-600" id="metric-shortlisted">1</div>
+      </div>
+      <div class="bg-white border border-amber-200 p-4 rounded-xl shadow-sm text-center">
+        <div class="text-xs text-amber-700 font-medium">⚠️ Under Review</div>
+        <div class="text-2xl font-bold mt-1 text-amber-600" id="metric-review">1</div>
+      </div>
+      <div class="bg-white border border-rose-200 p-4 rounded-xl shadow-sm text-center">
+        <div class="text-xs text-rose-700 font-medium">❌ Rejected</div>
+        <div class="text-2xl font-bold mt-1 text-rose-600" id="metric-rejected">6</div>
+      </div>
+      <div class="bg-white border border-blue-200 p-4 rounded-xl shadow-sm text-center col-span-2 sm:col-span-1">
+        <div class="text-xs text-blue-700 font-medium">🏆 Top Score</div>
+        <div class="text-2xl font-bold mt-1 text-blue-600" id="metric-top">80.1%</div>
+      </div>
+    </div>
+
+    <!-- Main Content: Leaderboard & Inspector -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Leaderboard Table (2 Cols) -->
+      <div class="lg:col-span-2 bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="flex justify-between items-center">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800">Candidate Ranking Leaderboard</h2>
+          <span class="text-xs text-slate-500">Click a candidate to inspect</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider">
+                <th class="py-2.5 px-3">Rank</th>
+                <th class="py-2.5 px-3">Candidate</th>
+                <th class="py-2.5 px-3">Status</th>
+                <th class="py-2.5 px-3 text-right">Score</th>
+                <th class="py-2.5 px-3 text-right">Skill %</th>
+                <th class="py-2.5 px-3 text-right">TF-IDF %</th>
+              </tr>
+            </thead>
+            <tbody id="candidates-table-body" class="divide-y divide-slate-100">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Candidate Inspector Drawer (1 Col) -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+        <div class="border-b border-slate-200 pb-3">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-slate-800">Candidate Profile Inspector</h2>
+          <p class="text-xs text-slate-500">Detailed skill gap & contact breakdown</p>
+        </div>
+
+        <div id="inspector-content" class="space-y-4 text-xs">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const DATASETS = {
+      python_backend: {
+        title: "Senior Python Backend Developer",
+        mandatorySkills: "Python, Django, FastAPI, PostgreSQL, Docker, RESTful APIs, Git, Redis, Linux, CI/CD",
+        candidates: [
+          { rank: 1, name: "Alex Turner", filename: "alex_turner_senior_python_dev.pdf", status: "Shortlisted", score: 80.1, skillPct: 100.0, tfidfPct: 37.7, email: "alex.turner@email.com", phone: "+1 (555) 234-5678", matched: ["Python", "Django", "FastAPI", "PostgreSQL", "Docker", "RESTful APIs", "Git", "Redis", "Linux", "CI/CD"], missing: [] },
+          { rank: 2, name: "Marcus Chen", filename: "marcus_chen_backend_engineer.docx", status: "Under Review", score: 48.5, skillPct: 70.0, tfidfPct: 13.7, email: "marcus.chen@email.com", phone: "+1 (555) 789-0123", matched: ["Python", "Django", "Docker", "Git", "Linux", "REST APIs", "Flask"], missing: ["FastAPI", "PostgreSQL", "Redis", "CI/CD"] },
+          { rank: 3, name: "Priya Sharma", filename: "priya_sharma_data_scientist.pdf", status: "Rejected", score: 25.7, skillPct: 40.0, tfidfPct: 4.3, email: "priya.sharma@email.com", phone: "+1 (555) 456-7890", matched: ["Python", "Git", "SQL"], missing: ["Django", "FastAPI", "PostgreSQL", "Docker", "Redis", "CI/CD"] },
+          { rank: 4, name: "Rohit Verma", filename: "rohit_verma_junior_python.pdf", status: "Rejected", score: 20.6, skillPct: 30.0, tfidfPct: 6.4, email: "rohit.verma@email.com", phone: "+1 (555) 111-2233", matched: ["Python", "Git", "Linux"], missing: ["Django", "FastAPI", "PostgreSQL", "Docker", "Redis", "CI/CD"] },
+          { rank: 5, name: "Sophia Rodriguez", filename: "sophia_rodriguez_data_analyst.pdf", status: "Rejected", score: 14.1, skillPct: 20.0, tfidfPct: 5.1, email: "sophia.rodriguez@email.com", phone: "+1 (555) 890-1234", matched: ["Python", "Git"], missing: ["Django", "FastAPI", "PostgreSQL", "Docker", "Redis", "CI/CD"] },
+          { rank: 6, name: "David Kim", filename: "david_kim_frontend_react.docx", status: "Rejected", score: 13.2, skillPct: 20.0, tfidfPct: 3.0, email: "david.kim@email.com", phone: "+1 (555) 321-6549", matched: ["Git", "REST APIs"], missing: ["Python", "Django", "FastAPI", "PostgreSQL", "Docker", "Redis", "CI/CD"] },
+          { rank: 7, name: "Chloe Dupont", filename: "chloe_dupont_graphic_designer.docx", status: "Rejected", score: 0.7, skillPct: 0.0, tfidfPct: 1.7, email: "chloe.dupont@email.com", phone: "+1 (555) 999-8888", matched: [], missing: ["Python", "Django", "FastAPI", "Docker", "PostgreSQL", "CI/CD"] },
+          { rank: 8, name: "Elena Rostova", filename: "elena_rostova_digital_marketer.pdf", status: "Rejected", score: 0.1, skillPct: 0.0, tfidfPct: 0.4, email: "elena.rostova@email.com", phone: "+1 (555) 654-9871", matched: [], missing: ["Python", "Django", "FastAPI", "Docker", "PostgreSQL", "CI/CD"] }
+        ]
+      },
+      data_scientist: {
+        title: "Data Scientist / ML Specialist",
+        mandatorySkills: "Python, Machine Learning, Pandas, NumPy, Scikit-Learn, SQL, NLP, Data Cleaning, Statistics",
+        candidates: [
+          { rank: 1, name: "Priya Sharma", filename: "priya_sharma_data_scientist.pdf", status: "Shortlisted", score: 81.7, skillPct: 100.0, tfidfPct: 41.7, email: "priya.sharma@email.com", phone: "+1 (555) 456-7890", matched: ["Python", "Machine Learning", "Pandas", "NumPy", "Scikit-Learn", "SQL", "NLP", "Data Cleaning", "Statistics"], missing: [] },
+          { rank: 2, name: "Sophia Rodriguez", filename: "sophia_rodriguez_data_analyst.pdf", status: "Under Review", score: 52.6, skillPct: 77.8, tfidfPct: 13.0, email: "sophia.rodriguez@email.com", phone: "+1 (555) 890-1234", matched: ["Python", "SQL", "Pandas", "NumPy", "Data Cleaning", "Statistics", "Data Analysis"], missing: ["Machine Learning", "Scikit-Learn", "NLP"] },
+          { rank: 3, name: "Rohit Verma", filename: "rohit_verma_junior_python.pdf", status: "Rejected", score: 15.5, skillPct: 22.2, tfidfPct: 5.5, email: "rohit.verma@email.com", phone: "+1 (555) 111-2233", matched: ["Python", "SQL"], missing: ["Machine Learning", "Pandas", "NumPy", "Scikit-Learn", "NLP"] },
+          { rank: 4, name: "Alex Turner", filename: "alex_turner_senior_python_dev.pdf", status: "Rejected", score: 9.7, skillPct: 11.1, tfidfPct: 4.0, email: "alex.turner@email.com", phone: "+1 (555) 234-5678", matched: ["Python"], missing: ["Machine Learning", "Pandas", "NumPy", "Scikit-Learn", "NLP", "Statistics"] },
+          { rank: 5, name: "Marcus Chen", filename: "marcus_chen_backend_engineer.docx", status: "Rejected", score: 8.6, skillPct: 11.1, tfidfPct: 2.9, email: "marcus.chen@email.com", phone: "+1 (555) 789-0123", matched: ["Python"], missing: ["Machine Learning", "Pandas", "NumPy", "Scikit-Learn", "NLP"] },
+          { rank: 6, name: "David Kim", filename: "david_kim_frontend_react.docx", status: "Rejected", score: 0.1, skillPct: 0.0, tfidfPct: 0.4, email: "david.kim@email.com", phone: "+1 (555) 321-6549", matched: [], missing: ["Python", "Machine Learning", "Pandas", "NumPy"] },
+          { rank: 7, name: "Chloe Dupont", filename: "chloe_dupont_graphic_designer.docx", status: "Rejected", score: 0.1, skillPct: 0.0, tfidfPct: 0.2, email: "chloe.dupont@email.com", phone: "+1 (555) 999-8888", matched: [], missing: ["Python", "Machine Learning"] },
+          { rank: 8, name: "Elena Rostova", filename: "elena_rostova_digital_marketer.pdf", status: "Rejected", score: 0.1, skillPct: 0.0, tfidfPct: 0.2, email: "elena.rostova@email.com", phone: "+1 (555) 654-9871", matched: [], missing: ["Python", "Machine Learning"] }
+        ]
+      },
+      data_analyst: {
+        title: "Senior Data Analyst & BI Developer",
+        mandatorySkills: "SQL, Python, Pandas, NumPy, Data Analysis, Tableau, Power BI, Excel, Statistics",
+        candidates: [
+          { rank: 1, name: "Sophia Rodriguez", filename: "sophia_rodriguez_data_analyst.pdf", status: "Shortlisted", score: 80.8, skillPct: 100.0, tfidfPct: 39.4, email: "sophia.rodriguez@email.com", phone: "+1 (555) 890-1234", matched: ["SQL", "Python", "Pandas", "NumPy", "Data Analysis", "Tableau", "Power BI", "Excel", "Statistics"], missing: [] },
+          { rank: 2, name: "Priya Sharma", filename: "priya_sharma_data_scientist.pdf", status: "Under Review", score: 61.5, skillPct: 77.8, tfidfPct: 24.5, email: "priya.sharma@email.com", phone: "+1 (555) 456-7890", matched: ["SQL", "Python", "Pandas", "NumPy", "Statistics", "Tableau", "Data Analysis"], missing: ["Power BI", "Excel"] },
+          { rank: 3, name: "Rohit Verma", filename: "rohit_verma_junior_python.pdf", status: "Rejected", score: 17.5, skillPct: 22.2, tfidfPct: 8.0, email: "rohit.verma@email.com", phone: "+1 (555) 111-2233", matched: ["SQL", "Python"], missing: ["Pandas", "NumPy", "Tableau", "Power BI", "Excel"] },
+          { rank: 4, name: "Alex Turner", filename: "alex_turner_senior_python_dev.pdf", status: "Rejected", score: 9.4, skillPct: 11.1, tfidfPct: 4.2, email: "alex.turner@email.com", phone: "+1 (555) 234-5678", matched: ["Python"], missing: ["SQL", "Pandas", "Tableau", "Power BI", "Excel"] },
+          { rank: 5, name: "Marcus Chen", filename: "marcus_chen_backend_engineer.docx", status: "Rejected", score: 8.9, skillPct: 11.1, tfidfPct: 3.2, email: "marcus.chen@email.com", phone: "+1 (555) 789-0123", matched: ["Python"], missing: ["SQL", "Pandas", "Tableau", "Power BI"] },
+          { rank: 6, name: "David Kim", filename: "david_kim_frontend_react.docx", status: "Rejected", score: 1.9, skillPct: 0.0, tfidfPct: 2.3, email: "david.kim@email.com", phone: "+1 (555) 321-6549", matched: [], missing: ["Python", "SQL", "Pandas"] },
+          { rank: 7, name: "Chloe Dupont", filename: "chloe_dupont_graphic_designer.docx", status: "Rejected", score: 0.2, skillPct: 0.0, tfidfPct: 0.5, email: "chloe.dupont@email.com", phone: "+1 (555) 999-8888", matched: [], missing: ["Python", "SQL"] },
+          { rank: 8, name: "Elena Rostova", filename: "elena_rostova_digital_marketer.pdf", status: "Rejected", score: 0.1, skillPct: 0.0, tfidfPct: 0.3, email: "elena.rostova@email.com", phone: "+1 (555) 654-9871", matched: [], missing: ["Python", "SQL"] }
+        ]
+      }
+    };
+
+    let currentRole = "python_backend";
+    let selectedCandidate = null;
+
+    function render() {
+      const data = DATASETS[currentRole];
+      document.getElementById('mandatory-skills-list').innerText = data.mandatorySkills;
+
+      const total = data.candidates.length;
+      const shortlisted = data.candidates.filter(c => c.status === "Shortlisted").length;
+      const review = data.candidates.filter(c => c.status === "Under Review").length;
+      const rejected = data.candidates.filter(c => c.status === "Rejected").length;
+      const topScore = Math.max(...data.candidates.map(c => c.score));
+
+      document.getElementById('metric-total').innerText = total;
+      document.getElementById('metric-shortlisted').innerText = shortlisted;
+      document.getElementById('metric-review').innerText = review;
+      document.getElementById('metric-rejected').innerText = rejected;
+      document.getElementById('metric-top').innerText = topScore.toFixed(1) + "%";
+
+      const tbody = document.getElementById('candidates-table-body');
+      tbody.innerHTML = "";
+
+      data.candidates.forEach((cand, idx) => {
+        let badgeClass = "badge-rejected";
+        if (cand.status === "Shortlisted") badgeClass = "badge-shortlisted";
+        else if (cand.status === "Under Review") badgeClass = "badge-review";
+
+        const isSelected = selectedCandidate && selectedCandidate.name === cand.name;
+        const row = document.createElement('tr');
+        row.className = `cursor-pointer transition hover:bg-slate-50 ${isSelected ? 'bg-blue-50 font-semibold' : ''}`;
+        row.onclick = () => selectCandidate(cand);
+
+        row.innerHTML = `
+          <td class="py-2.5 px-3 text-slate-400">#${cand.rank}</td>
+          <td class="py-2.5 px-3 text-slate-800 font-medium">${cand.name}</td>
+          <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded-full text-[11px] font-bold ${badgeClass}">${cand.status}</span></td>
+          <td class="py-2.5 px-3 text-right font-bold text-slate-900">${cand.score.toFixed(1)}%</td>
+          <td class="py-2.5 px-3 text-right text-slate-500">${cand.skillPct.toFixed(0)}%</td>
+          <td class="py-2.5 px-3 text-right text-slate-500">${cand.tfidfPct.toFixed(1)}%</td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      if (!selectedCandidate) {
+        selectCandidate(data.candidates[0]);
+      } else {
+        const match = data.candidates.find(c => c.name === selectedCandidate.name) || data.candidates[0];
+        selectCandidate(match);
+      }
+    }
+
+    function selectCandidate(cand) {
+      selectedCandidate = cand;
+
+      let badgeClass = "badge-rejected";
+      if (cand.status === "Shortlisted") badgeClass = "badge-shortlisted";
+      else if (cand.status === "Under Review") badgeClass = "badge-review";
+
+      const inspector = document.getElementById('inspector-content');
+      inspector.innerHTML = `
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">${cand.name}</h3>
+            <p class="text-[11px] text-slate-400 font-mono">${cand.filename}</p>
+          </div>
+          <span class="px-2.5 py-1 rounded-full text-xs font-bold ${badgeClass}">${cand.status}</span>
+        </div>
+
+        <div class="space-y-1.5 p-3 rounded-xl bg-slate-50 border border-slate-200">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Overall ATS Match:</span>
+            <span class="font-bold text-slate-900 text-sm">${cand.score.toFixed(1)}%</span>
+          </div>
+          <div class="flex justify-between text-[11px]">
+            <span class="text-slate-500">Skill Overlap (60% wt):</span>
+            <span class="font-semibold">${cand.skillPct.toFixed(0)}%</span>
+          </div>
+          <div class="flex justify-between text-[11px]">
+            <span class="text-slate-500">TF-IDF Context (40% wt):</span>
+            <span class="font-semibold">${cand.tfidfPct.toFixed(1)}%</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="font-semibold text-slate-800 mb-1.5">✓ Matched Skills (${cand.matched.length})</div>
+          <div class="flex flex-wrap gap-1">
+            ${cand.matched.length ? cand.matched.map(s => `<span class="tag-match px-2 py-0.5 rounded text-[11px] font-medium">${s}</span>`).join('') : '<span class="text-slate-400">None matched</span>'}
+          </div>
+        </div>
+
+        <div>
+          <div class="font-semibold text-rose-600 mb-1.5">✕ Missing Required Skills (${cand.missing.length})</div>
+          <div class="flex flex-wrap gap-1">
+            ${cand.missing.length ? cand.missing.map(s => `<span class="tag-miss px-2 py-0.5 rounded text-[11px] font-medium">${s}</span>`).join('') : '<span class="text-emerald-600 font-semibold">All mandatory skills present!</span>'}
+          </div>
+        </div>
+
+        <div class="border-t border-slate-200 pt-3 text-[11px] space-y-1 text-slate-500">
+          <div>📧 <b>Email:</b> ${cand.email}</div>
+          <div>📞 <b>Phone:</b> ${cand.phone}</div>
+        </div>
+      `;
+
+      const rows = document.getElementById('candidates-table-body').children;
+      const data = DATASETS[currentRole];
+      data.candidates.forEach((c, idx) => {
+        if (rows[idx]) {
+          if (c.name === cand.name) {
+            rows[idx].classList.add('bg-blue-50', 'font-semibold');
+          } else {
+            rows[idx].classList.remove('bg-blue-50', 'font-semibold');
+          }
+        }
+      });
+    }
+
+    function switchRole(roleKey) {
+      currentRole = roleKey;
+      selectedCandidate = null;
+
+      ['python', 'ds', 'da'].forEach(k => {
+        const btn = document.getElementById(`btn-${k}`);
+        btn.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold border border-slate-300 text-slate-700 hover:bg-slate-100 transition";
+      });
+
+      const activeBtnMap = {
+        python_backend: 'btn-python',
+        data_scientist: 'btn-ds',
+        data_analyst: 'btn-da'
+      };
+      const activeBtn = document.getElementById(activeBtnMap[roleKey]);
+      activeBtn.className = "px-3.5 py-1.5 rounded-lg text-xs font-semibold border transition bg-blue-600 text-white border-blue-600 shadow-sm";
+
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>
