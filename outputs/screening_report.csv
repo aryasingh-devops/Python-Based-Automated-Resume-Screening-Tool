@@ -1,0 +1,9 @@
+Rank,Candidate Name,Status,Final Score (%),Skill Match (%),TF-IDF Match (%),Matched Skills,Missing Skills,Email,Phone,Filename
+1,Sophia Rodriguez,Shortlisted,80.76,100.0,39.4,"SQL, Python, Pandas, NumPy, Data Analysis, Tableau, Power BI, Excel, Statistics",,sophia.rodriguez@email.com,+1 (555) 890-1234,sophia_rodriguez_data_analyst.pdf
+2,Priya Sharma,Under Review,61.45,77.78,24.45,"SQL, Python, Pandas, NumPy, Data Analysis, Tableau, Statistics","Power BI, Excel",priya.sharma@email.com,+1 (555) 456-7890,priya_sharma_data_scientist.pdf
+3,Rohit Verma,Rejected,17.51,22.22,7.95,"SQL, Python","Pandas, NumPy, Data Analysis, Tableau, Power BI, Excel, Statistics",rohit.verma@email.com,+1 (555) 111-2233,rohit_verma_junior_python.pdf
+4,Alex Turner,Rejected,9.36,11.11,4.24,Python,"SQL, Pandas, NumPy, Data Analysis, Tableau, Power BI, Excel, Statistics",alex.turner@email.com,+1 (555) 234-5678,alex_turner_senior_python_dev.pdf
+5,Marcus Chen,Rejected,8.93,11.11,3.17,Python,"SQL, Pandas, NumPy, Data Analysis, Tableau, Power BI, Excel, Statistics",marcus.chen@email.com,+1 (555) 789-0123,marcus_chen_backend_engineer.docx
+6,David Kim,Rejected,1.9,0.0,2.25,,"SQL, Python, Pandas, NumPy, Data Analysis, Tableau, Power BI, Excel, Statistics",david.kim@email.com,+1 (555) 321-6549,david_kim_frontend_react.docx
+7,Chloe Dupont,Rejected,0.21,0.0,0.52,,"SQL, Python, Pandas, NumPy, Data Analysis, Tableau, Power BI, Excel, Statistics",chloe.dupont@email.com,+1 (555) 999-8888,chloe_dupont_graphic_designer.docx
+8,Elena Rostova,Rejected,0.13,0.0,0.33,,"SQL, Python, Pandas, NumPy, Data Analysis, Tableau, Power BI, Excel, Statistics",elena.rostova@email.com,+1 (555) 654-9871,elena_rostova_digital_marketer.pdf

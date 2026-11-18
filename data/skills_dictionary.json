@@ -1,0 +1,35 @@
+{
+  "programming_languages": [
+    "Python", "Java", "C++", "C#", "C", "JavaScript", "TypeScript", "Go", "Golang", 
+    "Rust", "Ruby", "PHP", "Swift", "Kotlin", "Scala", "R", "Dart", "Bash", "Shell"
+  ],
+  "frameworks_and_libraries": [
+    "Django", "FastAPI", "Flask", "React", "Next.js", "Vue", "Angular", "Node.js", 
+    "Express.js", "Spring Boot", "ASP.NET", "PyTest", "Celery", "Redux", "Tailwind CSS", 
+    "Bootstrap", "jQuery", "Laravel", "Ruby on Rails", "RESTful APIs", "REST APIs", "REST API"
+  ],
+  "data_science_and_ai": [
+    "Machine Learning", "Deep Learning", "NLP", "Natural Language Processing", 
+    "Computer Vision", "Scikit-Learn", "Pandas", "NumPy", "TensorFlow", "PyTorch", 
+    "Keras", "TF-IDF", "BERT", "OpenCV", "NLTK", "Spacy", "HuggingFace", "Statistics", 
+    "Data Cleaning", "Data Analysis", "Exploratory Data Analysis", "EDA", "Feature Engineering"
+  ],
+  "databases": [
+    "SQL", "PostgreSQL", "MySQL", "MongoDB", "SQLite", "Redis", "Cassandra", 
+    "Oracle", "Microsoft SQL Server", "DynamoDB", "Elasticsearch", "Neo4j"
+  ],
+  "cloud_and_devops": [
+    "AWS", "Azure", "GCP", "Google Cloud", "Docker", "Kubernetes", "Linux", 
+    "CI/CD", "Git", "GitHub Actions", "Jenkins", "Terraform", "Ansible", 
+    "Microservices Architecture", "Serverless", "Nginx"
+  ],
+  "analytics_and_bi": [
+    "Tableau", "Power BI", "Excel", "Data Visualization", "ETL", "Business Intelligence", 
+    "Looker", "Google Analytics", "Metabase", "Snowflake", "Databricks"
+  ],
+  "design_and_marketing": [
+    "Figma", "Adobe Photoshop", "Adobe Illustrator", "InDesign", "UI/UX", "Typography", 
+    "Brand Identity", "SEO", "Search Engine Optimization", "Google Ads", "SEM", 
+    "Content Strategy", "Copywriting", "Email Marketing", "Social Media Marketing", "HubSpot"
+  ]
+}

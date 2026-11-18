@@ -1,0 +1,103 @@
+{
+  "python_backend_developer": {
+    "title": "Senior Python Backend Developer",
+    "department": "Core Engineering",
+    "experience_required": "3-5 years",
+    "required_skills": [
+      "Python",
+      "Django",
+      "FastAPI",
+      "PostgreSQL",
+      "Docker",
+      "RESTful APIs",
+      "Git",
+      "Redis",
+      "Linux",
+      "CI/CD"
+    ],
+    "preferred_skills": [
+      "AWS",
+      "Kubernetes",
+      "Microservices Architecture",
+      "Celery",
+      "PyTest"
+    ],
+    "description": "We are seeking an experienced Senior Python Backend Developer to design, develop, and maintain high-performance microservices and RESTful APIs. You will work with relational databases like PostgreSQL, caching layers like Redis, and containerized deployments using Docker and AWS. Ideal candidates have deep expertise in Python, Django, FastAPI, asynchronous programming, automated testing with PyTest, and continuous integration CI/CD pipelines."
+  },
+  "data_scientist": {
+    "title": "Data Scientist / Machine Learning Specialist",
+    "department": "Artificial Intelligence & Analytics",
+    "experience_required": "2-4 years",
+    "required_skills": [
+      "Python",
+      "Machine Learning",
+      "Pandas",
+      "NumPy",
+      "Scikit-Learn",
+      "SQL",
+      "NLP",
+      "Data Cleaning",
+      "Statistics"
+    ],
+    "preferred_skills": [
+      "PyTorch",
+      "TensorFlow",
+      "Deep Learning",
+      "TF-IDF",
+      "Tableau",
+      "FastAPI",
+      "Docker"
+    ],
+    "description": "Looking for a passionate Data Scientist to build predictive models and natural language processing (NLP) pipelines. You will clean and analyze large tabular and unstructured datasets using Python, Pandas, NumPy, and SQL. You should have strong practical experience with Scikit-learn, TF-IDF vectorization, feature engineering, classification algorithms, and deploying machine learning models into production environments."
+  },
+  "data_analyst": {
+    "title": "Senior Data Analyst & BI Developer",
+    "department": "Business Intelligence",
+    "experience_required": "2-4 years",
+    "required_skills": [
+      "SQL",
+      "Python",
+      "Pandas",
+      "NumPy",
+      "Data Analysis",
+      "Tableau",
+      "Power BI",
+      "Excel",
+      "Statistics"
+    ],
+    "preferred_skills": [
+      "ETL",
+      "Data Visualization",
+      "Git",
+      "Business Intelligence",
+      "Data Cleaning"
+    ],
+    "description": "We need an analytical Senior Data Analyst to extract business intelligence from complex enterprise data repositories. You must possess mastery in SQL query writing, Python data wrangling with Pandas and NumPy, and creating executive dashboards in Tableau or Power BI. Responsibilities include building automated reporting pipelines, identifying growth metrics, and communicating statistical findings to cross-functional stakeholders."
+  },
+  "fullstack_python_developer": {
+    "title": "Full Stack Python Web Developer",
+    "department": "Web Applications",
+    "experience_required": "2-4 years",
+    "required_skills": [
+      "Python",
+      "Flask",
+      "Django",
+      "JavaScript",
+      "React",
+      "MySQL",
+      "REST APIs",
+      "HTML5",
+      "CSS3",
+      "Git"
+    ],
+    "preferred_skills": [
+      "Docker",
+      "Linux",
+      "PyTest",
+      "Postman",
+      "Agile",
+      "Tailwind CSS"
+    ],
+    "description": "Seeking a Full Stack Python Web Developer proficient in both backend API construction and responsive frontend interfaces. Candidate should be comfortable writing clean Python backend services using Flask or Django, connecting with MySQL databases, and building dynamic UI components with JavaScript and React. Familiarity with Git version control, Docker containers, and Agile team workflows is strongly desired."
+  }
+}
