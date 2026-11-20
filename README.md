@@ -32,6 +32,16 @@ When corporate job openings receive hundreds of applicants within days, human re
 - **40% TF-IDF Cosine Similarity:** Evaluates semantic depth, project descriptions, and domain terminology across unigram and bigram tokens.
 - **Preferred Skill Bonus:** Rewards supplementary competencies (up to +5%).
 
+## 📸 Output Screenshots
+
+<img width="1920" height="1020" alt="Screenshot 2026-11-18 230237" src="https://github.com/user-attachments/assets/ab32241c-8db5-4d1e-a536-03e5f21a093e" />
+<img width="1920" height="1020" alt="Screenshot 2026-11-18 231125" src="https://github.com/user-attachments/assets/69d1dd78-39f5-4a0d-ac7e-d2dd6b994717" />
+<img width="1920" height="1020" alt="Screenshot 2026-11-18 231137" src="https://github.com/user-attachments/assets/7442d3cb-e02c-4aa7-8ad4-66753472a69b" />
+
+## 🎥 Demo Video
+
+https://youtu.be/ij2z1LZ1Obk?si=IYIlTTot57la0nu9
+
 ---
 
 ## 💼 Problem Statement & Industry Relevance
