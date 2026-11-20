@@ -1,4 +1,4 @@
-# 📄 Automated Resume Screening Tool (Enterprise ATS)
+# 📄 Automated Resume Screening Tool 
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Framework-Streamlit](https://img.shields.io/badge/UI-Streamlit-FF4B4B.svg)](https://streamlit.io/)
